@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カロリー計算フォーム</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 480px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result,
+        #comment {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        #source {
+            margin-top: 30px;
+            font-size: 12px;
+            text-align: center;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>消費カロリー計算フォーム</h2>
+
+    <label>体重（kg）:
+        <input type="number" id="weight" required>
+    </label>
+
+    <label>運動時間（分）:
+        <input type="number" id="minutes" required>
+    </label>
+
+    <label>運動の種類:
+        <select id="activity">
+            <option value="3.5">ウォーキング</option>
+            <option value="6.0">サイクリング</option>
+            <option value="7.0">ジョギング</option>
+        </select>
+    </label>
+
+
+
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button onclick="calculateCalories()">計算する</button>
+        <button onclick="clearForm()">クリア</button>
+    </div>
+
+    <div id="result">結果がここに表示されます</div>
+    <div id="comment"></div>
+
+    <div id="source">
+        出典：<br>
+        ・<a href="https://www.mhlw.go.jp/stf/shingi/2r9852000002ygig-att/2r9852000002ygnd.pdf" target="_blank">
+            厚生労働省『日本人の食事摂取基準（2020年版）』（PDF）
+        </a><br>
+        ・<a href="https://www.nibiohn.go.jp/eiken/programs/2011mets.pdf" target="_blank">
+            国立健康・栄養研究所『身体活動のメッツ（METs）表』（2011年改訂版）（PDF）
+        </a>
+    </div>
+
+    <script>
+
+        function calculateCalories() {
+            const weight = parseFloat(document.getElementById("weight").value);
+            const minutes = parseFloat(document.getElementById("minutes").value);
+            const mets = parseFloat(document.getElementById("activity").value);
+
+            const resultEl = document.getElementById("result");
+            const commentEl = document.getElementById("comment");
+
+            if (isNaN(weight) || isNaN(minutes)) {
+                resultEl.textContent = "すべての項目を正しく入力してください。";
+                commentEl.textContent = "";
+                return;
+            }
+
+            const hours = minutes / 60;
+            const calories = mets * weight * hours * 1.05;
+
+            resultEl.textContent = `あなたの消費カロリーは ${calories.toFixed(2)} kcal です。`;
+
+            // 目的別評価ロジック
+            let purpose = "";
+            let judgment = "";
+
+            if (calories < 300) {
+                purpose = "健康維持（300～500 kcal）";
+                judgment = "もう少し運動量を増やしてみましょう。";
+            } else if (calories < 500) {
+                purpose = "健康維持（300～500 kcal）";
+                judgment = "目安内です。良いペースです！";
+            } else if (calories < 700) {
+                purpose = "ダイエット（500～700 kcal）";
+                judgment = "ダイエット目安にちょうど良い運動量です！";
+            } else {
+                purpose = "有酸素＋筋力（700 kcal以上）";
+                judgment = "かなりしっかり動けています！素晴らしい！";
+            }
+
+            commentEl.textContent = `▶ 推奨目安：${purpose} ⇒ ${judgment}`;
+        }
+
+        function clearForm() {
+            document.getElementById("weight").value = "";
+            document.getElementById("minutes").value = "";
+            document.getElementById("activity").selectedIndex = 0; // 最初の選択肢に戻す
+            document.getElementById("result").textContent = "結果がここに表示されます";
+            document.getElementById("comment").textContent = "";
+        }
+
+    </script>
+</body>
+
+</html>
