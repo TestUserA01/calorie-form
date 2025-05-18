@@ -2,8 +2,8 @@
 <html lang="ja">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>カロリー計算フォーム</title>
     <style>
         body {
@@ -58,18 +58,62 @@
             text-align: center;
             color: gray;
         }
+
+        /* 👁アイコンの調整 */
+        .input-with-eye {
+            position: relative;
+        }
+
+        .input-with-eye input {
+            width: 100%;
+            padding: 10px;
+            padding-right: 40px;
+            /* 👁 のスペースを確保 */
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .input-with-eye span {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            color: #555;
+            user-select: none;
+        }
+
+        input::-ms-reveal,
+        input::-ms-clear,
+        input::-webkit-contacts-auto-fill-button,
+        input::-webkit-credentials-auto-fill-button {
+            display: none !important;
+        }
+
+        .version {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #666;
+        }
     </style>
 </head>
 
 <body>
+    <div class="version">バージョン 1.01</div>
+    <h2>氷川ラン</h2>
     <h2>消費カロリー計算フォーム</h2>
 
-    <label>体重（kg）:
-        <input type="number" id="weight" required>
-    </label>
+    <label for="weight">体重（kg）:</label>
+    <div class="input-with-eye">
+        <input type="password" id="weight" required />
+        <span onclick="toggleWeightVisibility()">👁</span>
+    </div>
 
     <label>運動時間（分）:
-        <input type="number" id="minutes" required>
+        <input type="number" id="minutes" required />
     </label>
 
     <label>運動の種類:
@@ -80,8 +124,6 @@
         </select>
     </label>
 
-
-
     <div style="display: flex; gap: 10px; margin-top: 20px;">
         <button onclick="calculateCalories()">計算する</button>
         <button onclick="clearForm()">クリア</button>
@@ -91,17 +133,16 @@
     <div id="comment"></div>
 
     <div id="source">
-        出典：<br>
+        出典：<br />
         ・<a href="https://www.mhlw.go.jp/stf/shingi/2r9852000002ygig-att/2r9852000002ygnd.pdf" target="_blank">
             厚生労働省『日本人の食事摂取基準（2020年版）』（PDF）
-        </a><br>
+        </a><br />
         ・<a href="https://www.nibiohn.go.jp/eiken/programs/2011mets.pdf" target="_blank">
             国立健康・栄養研究所『身体活動のメッツ（METs）表』（2011年改訂版）（PDF）
         </a>
     </div>
 
     <script>
-
         function calculateCalories() {
             const weight = parseFloat(document.getElementById("weight").value);
             const minutes = parseFloat(document.getElementById("minutes").value);
@@ -145,11 +186,16 @@
         function clearForm() {
             document.getElementById("weight").value = "";
             document.getElementById("minutes").value = "";
-            document.getElementById("activity").selectedIndex = 0; // 最初の選択肢に戻す
+            document.getElementById("activity").selectedIndex = 0;
             document.getElementById("result").textContent = "結果がここに表示されます";
             document.getElementById("comment").textContent = "";
         }
 
+        function toggleWeightVisibility() {
+            const input = document.getElementById("weight");
+            input.type = input.type === "password" ? "number" : "password";
+            input.focus(); // カーソル維持
+        }
     </script>
 </body>
 
